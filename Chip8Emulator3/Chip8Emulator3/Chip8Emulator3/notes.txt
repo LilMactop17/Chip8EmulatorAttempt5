@@ -1,0 +1,39 @@
+CPU reads from somewhere in memory -> tells cpu what to do
+
+eg. Gameboy CPU -> $C622 -> $C6 says add to register A, $22 says 22 is the value that will be added
+
+Chip-8 was a virtual machine, not real hardware, meaning no cpu, but same rules apply
+eg. for CHIP-8, $7522 -> $75 says add to register 5, $22 says value is 22
+
+$ and 0x mean a number is represented in hexadecimal
+
+ROM files contain the instruction, emulator reads the instructions, then does the work to mimic the hardware
+
+
+CHIP-8 Description
+
+- 16 8-bit registers, labelled V0 to VF (0=0 in hex, F=15 in hex, hterefore 0-15 is 16 registers)
+- Each register can hold any value from 0x00 to 0xFF
+- Register VF is a bit special -> used as a flag to hold info about result of operations
+- 4kb of memory (4096 bytes) -> 0x000 to 0xFFF
+--> 0x000-0x1ff -> originally reserved for the chip-8 interpreter, but it will hold nothing for us, except for...
+--> 0x050-0x0A0 -> storage space for the 16 built-in characters 0-F 
+--> 0x200-0xFFF -> instructions from the ROM will be stored starting at 0x200, anything left is free to use
+
+- 16-bit Index Register, special register used to store memory addresses for use in operations
+- 16-bit program counter (PC), holds address of the next instruction to execute
+An instruction is 2 bytes, but memory is addressed as a single byte, so we need to fetch an instruction and a byte from PC+1
+- 16 level stack, meaning chip-8 can hold 16 different PCs
+- 8-bit stack pointer, keeps track of the most recent level that was written into the stack ie. the top
+
+8-bit Delay Timer
+- if timer is zero, it stays at zero, else, it decreases at a rate of 60 hz, or whatever value we store in the cycle clock
+8-bit sound timer
+
+16 input keys
+
+64x32 monochrome display memory
+- 64 pixels wide, 32 pixels high
+- each pixel is either on or off, so only two colours
+- in SDL, on is 0xFFFFFFFF, off is 0x00000000
+- Draw instruction iterates over each pixel in a sprite, and XORs the sprite pixel with the display pixel
